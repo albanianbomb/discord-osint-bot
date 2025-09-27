@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
 from datetime import datetime, timedelta
+from flask import Flask
+from threading import Thread
 import aiohttp
 import asyncio
 import uuid
@@ -9,6 +11,16 @@ import io
 import traceback
 import requests
 import os
+
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "Bot läuft ✅"
+
+def run():
+    app.run(host='0.0.0.0', port=8080)
+
 
 # ---------------- CONFIG ----------------
 API_KEY = os.environ.get("OSINT_API_KEY", "fallback_api_key")
@@ -269,4 +281,7 @@ async def osint(ctx, *, query: str):
 TOKEN = os.environ.get("DISCORD_TOKEN")
 if not TOKEN:
     raise ValueError("⚠️ Kein DISCORD_TOKEN gefunden. Bitte als Environment Variable setzen.")
+
+Thread(target=run).start()
+
 bot.run(TOKEN)
